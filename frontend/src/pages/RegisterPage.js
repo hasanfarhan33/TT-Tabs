@@ -12,9 +12,9 @@ const RegisterPage = () => {
   };
 
   return (
-    <main className="flex items-center justify-center h-screen bg-green-50">
+    <main className="flex items-center justify-center h-screen bg-slate-50">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-80">
-        <h1 className="text-3xl font-bold text-center text-green-700 mb-6">Register</h1>
+        <h1 className="text-3xl font-bold text-center text-red-700 mb-6">Register</h1>
         <form onSubmit={handleRegister} className="flex flex-col gap-4">
           <input
             type="text"
@@ -42,10 +42,13 @@ const RegisterPage = () => {
           />
           <button
             type="submit"
-            className="bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg"
+            className="bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-bold"
           >
             Submit
           </button>
+          
+          <p className='text-center text-black mt-4'>Already have an account? <a href="/login" className='text-red-500 font-semibold hover:underline transition'>Login</a></p>
+          
           {error && <p className="text-red-500 text-center">{error}</p>}
         </form>
       </div>
