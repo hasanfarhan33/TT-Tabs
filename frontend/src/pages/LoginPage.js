@@ -1,14 +1,15 @@
 import React, { useState } from 'react'; 
 import axios from 'axios'; 
+import { useLogin } from '../hooks/useLogin';
 
 const LoginPage = () => {
   const [email, setEmail] = useState(""); 
   const [password, setPassword] = useState(""); 
-  const [error, setError] = useState("");
+  const {login, isLoading, error} = useLogin(); 
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("You wanna login!"); 
+    await login(email, password) 
   }
 
   return (

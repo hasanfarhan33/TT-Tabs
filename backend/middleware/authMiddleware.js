@@ -1,33 +1,38 @@
-const admin = require("firebase-admin"); 
+const jwt = require("jsonwebtoken")
+const User = require("../models/User.js")
 
-if(!admin.apps.length) {
-    admin.initializeApp({
-        credential: admin.credential.applicationDefault(), 
-    }); 
-}
+require('dotenv').config(); 
 
-const verifyToken = async (req, res, next) => {
-    const authHeader = req.headers.authorization; 
+const authMiddleware = async (req, res, next) => {
 
-    if(!authHeader || !authHeader.startsWith(`Bearer `)) {
-        return res.status(401).json({message: "No token provided"}); 
+    // Verify authentication 
+    const {authorization} = req.headers 
+
+    if(!authorization) {
+        return res.status(401).json({error: "Authorization token required!"})
     }
 
-    const token = authHeader.split(" ")[1]; 
+    // Getting the token and making sure that it is valid 
+    const token = authorization.split(" ")[1] 
 
-    // Try to decode the token 
+    if(!token) {
+        return res.status(401).json({error: "Token format is incorrect"}); 
+    }
+
     try {
-        const decodedToken = await admin.auth().verifyToken(token); 
-        req.user = {
-            uid: decodedToken.uid, 
-            email: decodedToken.email,
-        }; 
+        const {_id} = jwt.verify(token, process.env.SECRET)
+        req.user = await User.findOne({_id}).select("_id")
 
-        next(); 
+        if(!req.user) {
+            return res.status(401).json({error: "User not found!"})
+        }
+
+        return next(); 
+
     } catch (error) {
-        console.error("Token verification failed:", error.message); 
-        return res.status(401).json({message: "Invalid Token!"})
+        console.error(error)
+        return res.status(401).json({error: "Request is not authorized!"})
     }
 }
 
-module.exports = verifyToken; 
+module.exports = authMiddleware

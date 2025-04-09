@@ -1,25 +1,34 @@
 const User = require("../models/User")
+const jwt = require("jsonwebtoken")
+
+require('dotenv').config(); 
+
+
+const createToken = (_id) => {
+    if(!process.env.SECRET) {
+        throw new Error("Secret key not found in environment variables")
+    }
+    return jwt.sign({_id}, process.env.SECRET, {expiresIn: '3d'}); 
+}
 
 // Create User 
 const createUser = async (req, res) => {
-    const {uid, email} = req.user; 
-    const {displayName} = req.body; 
+    const {displayName, email, password} = req.body; 
 
     try {
-        // Check if the user exists 
-        const existingUser = await User.findOne({uid})
-        if(existingUser) {
-            res.status(400).json({message: "User already exists!"});  
-        }
+        const user = await User.register(displayName, email, password) 
 
-        const user = new User({
-            uid, 
-            email, 
-            displayName, 
+        // Create token 
+        const token = createToken(user._id); 
+
+        res.status(201).json({
+            _id: user.id, 
+            displayName: user.displayName, 
+            email: user.email, 
+            totalWins: user.totalWins, 
+            totalMatches: user.totalMatches, 
+            token: token 
         })
-
-        await user.save(); 
-        res.status(200).json({message: "User created successfully!"});
 
     } catch (error) {
         res.status(500).json({error: error.message}); 
@@ -27,16 +36,21 @@ const createUser = async (req, res) => {
 }
 
 // Get User
-const getUser = async (req, res) => {
-    const {uid} = req.params; 
+const loginUser = async (req, res) => {
+    const {email, password} = req.body; 
+    
     try {
-        const user = await User.findOne({uid}); 
-
-        if(!user) {
-            res.status(404).json({error: "User not found!"})
-        }
-
-        res.status(200).json(user);    
+        const user = await User.login(email, password) 
+        const token = createToken(user._id)
+        
+        res.status(200).json({
+            _id: user._id, 
+            displayName: user.displayName, 
+            email: user.email, 
+            totalWins: user.totalWins, 
+            totalMatches: user.totalMatches, 
+            token: token
+        })
     } catch (error) {
         res.status(500).json({error: error.message})
     }
@@ -57,4 +71,4 @@ const deleteUser = async(req, res) => {
     }
 }
 
-module.exports = {createUser, getUser, deleteUser}; 
+module.exports = {createUser, loginUser}; 
