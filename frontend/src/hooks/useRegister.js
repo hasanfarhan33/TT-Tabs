@@ -7,7 +7,7 @@ export const useRegister = () => {
     const [isLoading, setIsLoading] = useState(null)
     const { dispatch } = useAuthContext()
 
-    const register = async (displayName, email, password) => {
+    const register = async (userName, displayName, email, password) => {
         setIsLoading(true)
         setError(null)
         setSuccess("")
@@ -15,7 +15,7 @@ export const useRegister = () => {
         const response = await fetch("/api/auth/create", {
             method: "POST", 
             headers: {"Content-Type": "application/json"}, 
-            body: JSON.stringify({displayName, email, password})
+            body: JSON.stringify({userName, displayName, email, password})
         })
 
         const json = await response.json(); 

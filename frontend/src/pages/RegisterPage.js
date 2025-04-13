@@ -1,18 +1,22 @@
 import React, { useState } from "react";
+import axios from 'axios'; 
+import { useRegister } from "../hooks/useRegister";
 
 const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState(""); 
   const [displayName, setDisplayName] = useState("");
-  const [error, setError] = useState("");
+  const [userName, setUserName] = useState("")
+  
+  const {register, isLoading, error, success} = useRegister(); 
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    console.log("You wanna register!");
+    await register(userName, displayName, email, password); 
   };
 
   return (
-    <main className="flex items-center justify-center h-screen bg-slate-50">
+    <main className="flex items-center justify-center h-screen bg-alabaster font-mont">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-80">
         <h1 className="text-3xl font-bold text-center text-red-700 mb-6">Register</h1>
         <form onSubmit={handleRegister} className="flex flex-col gap-4">
@@ -20,17 +24,25 @@ const RegisterPage = () => {
             type="text"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
-            placeholder="Display Name"
+            placeholder="Enter your name"
             required
-            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
           />
+          <input 
+            type="text" 
+            value={userName} 
+            onChange={(e) => setUserName(e.target.value)} 
+            placeholder="Username" 
+            required 
+            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             required
-            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
           />
           <input
             type="password"
@@ -38,7 +50,7 @@ const RegisterPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             required
-            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 mb-8"
           />
           <button
             type="submit"
@@ -50,6 +62,7 @@ const RegisterPage = () => {
           <p className='text-center text-black mt-4'>Already have an account? <a href="/login" className='text-red-500 font-semibold hover:underline transition'>Login</a></p>
           
           {error && <p className="text-red-500 text-center">{error}</p>}
+          {success && <p className="text-green-500 text-center">{success}</p>}
         </form>
       </div>
     </main>

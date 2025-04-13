@@ -4,6 +4,7 @@ const connectDB = require('./config/db');
 require('dotenv').config();
 
 const userRoutes = require("./routes/userRoutes")
+const challengeRoutes = require("./routes/challengeRoutes"); 
 
 // Connect to DB 
 connectDB();
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 
 // Routes 
 app.use("/api/auth", userRoutes); 
+app.use("/api/challenges", challengeRoutes)
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

@@ -13,7 +13,7 @@ const LoginPage = () => {
   }
 
   return (
-    <main className="flex items-center justify-center h-screen bg-slate-50">
+    <main className="flex items-center justify-center h-screen bg-alabaster font-mont">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-80">
         <h1 className="text-3xl font-bold text-center text-slate-900 mb-6">Login</h1>
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
@@ -22,14 +22,14 @@ const LoginPage = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"
           />
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
-            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"
           />
           <button
             type="submit"

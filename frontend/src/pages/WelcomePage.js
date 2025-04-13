@@ -10,9 +10,9 @@ const WelcomePage = () => {
   };
 
   return (
-    <main className="flex flex-col items-center justify-center h-screen bg-slate-50 px-4">
+    <main className="flex flex-col items-center justify-center h-screen bg-slate-50 px-4 font-mont">
       <div className="text-center mb-8">
-        <h1 className="text-5xl font-bold text-black mb-4">TT-Tabs 🏓</h1>
+        <h1 className="text-8xl text-black mb-4 font-bebas">TT-Tabs 🏓</h1>
       </div>
 
       <div className="mb-8">
@@ -23,14 +23,14 @@ const WelcomePage = () => {
           transition={{ duration: 0.5 }}
         >
           <motion.li 
-            className="flex items-center gap-2 font-semibold"
+            className="flex items-center gap-2 font-semibold text-xl"
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.3 }}
           >
             <span className="text-orange-500">⚡</span> Keep track of your previous games!
           </motion.li>
           <motion.li 
-            className="flex items-center gap-2 font-semibold"
+            className="flex items-center gap-2 font-semibold text-xl"
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.3 }}
           >

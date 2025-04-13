@@ -3,6 +3,11 @@ const bcrypt = require("bcryptjs")
 const validator = require('validator')
 
 const userSchema = new mongoose.Schema({
+    userName: {
+        type: String, 
+        required: true, 
+        unique: true
+    },
     displayName: {
         type: String, 
         required: true, 
@@ -27,9 +32,9 @@ const userSchema = new mongoose.Schema({
 }, {timestamps: true})
 
 // Static register method 
-userSchema.statics.register = async function(displayName, email, password) {
+userSchema.statics.register = async function(userName, displayName, email, password) {
     // Make sure all the fields are provided 
-    if (!displayName || !email || !password) {
+    if (!userName || !displayName || !email || !password) {
         throw Error("All fields must be filled")
     }
 
@@ -47,12 +52,17 @@ userSchema.statics.register = async function(displayName, email, password) {
         throw Error("User already exists ya dumb dodo")
     }
 
+    const takenUsername = await this.findOne({userName})
+    if(takenUsername) {
+        throw Error("Username taken, try something else.")
+    }
+
     // Encrypting the password 
     const salt = await bcrypt.genSalt(10); 
     const hash = await bcrypt.hash(password, salt)
 
     // Creating the user in DB 
-    const user = await this.create({displayName, email, password:hash})
+    const user = await this.create({userName, displayName, email, password:hash})
 
     return user 
 

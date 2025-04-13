@@ -25,7 +25,7 @@ export const AuthContextProvider = ({children}) => {
         if (user) {
             const fetchUpdatedUserData = async () => {
                 try {
-                    const response = await fetch(`/api/users/${user._id}`, {
+                    const response = await fetch(`/api/auth/${user._id}`, {
                         headers: {
                             Authorization: `Bearer ${user.token}`,
                         },
