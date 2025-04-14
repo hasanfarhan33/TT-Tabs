@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router(); 
-const {createChallenge} = require("../controllers/challengeController")
+const {sendChallenge} = require("../controllers/challengeController")
 
 // SEND CHALLENGE 
-router.post("/create", createChallenge)
+router.post("/send", sendChallenge)
 
 module.exports = router; 

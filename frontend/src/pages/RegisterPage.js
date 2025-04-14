@@ -16,9 +16,9 @@ const RegisterPage = () => {
   };
 
   return (
-    <main className="flex items-center justify-center h-screen bg-alabaster font-mont">
+    <main className="flex items-center justify-center h-screen bg-accent font-mont">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-80">
-        <h1 className="text-3xl font-bold text-center text-red-700 mb-6">Register</h1>
+        <h1 className="text-3xl font-funnel font-semibold text-center text-button-primary mb-6">Register</h1>
         <form onSubmit={handleRegister} className="flex flex-col gap-4">
           <input
             type="text"
@@ -26,7 +26,7 @@ const RegisterPage = () => {
             onChange={(e) => setDisplayName(e.target.value)}
             placeholder="Enter your name"
             required
-            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-button-primary"
           />
           <input 
             type="text" 
@@ -34,7 +34,7 @@ const RegisterPage = () => {
             onChange={(e) => setUserName(e.target.value)} 
             placeholder="Username" 
             required 
-            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-button-primary"
             />
           <input
             type="email"
@@ -42,7 +42,7 @@ const RegisterPage = () => {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             required
-            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-button-primary"
           />
           <input
             type="password"
@@ -50,11 +50,11 @@ const RegisterPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             required
-            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 mb-8"
+            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-button-primary mb-8"
           />
           <button
             type="submit"
-            className="bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-bold"
+            className="bg-button-primary hover:bg-accent text-accent hover:text-button-primary hover:ring-2 hover:ring-button-primary py-2 rounded-lg font-bold transition"
           >
             Submit
           </button>

@@ -4,6 +4,7 @@ import DashboardPage from './pages/DashboardPage';
 import RegisterPage from "./pages/RegisterPage";
 import WelcomePage from "./pages/WelcomePage"; 
 import { useAuthContext } from './hooks/useAuthContext';
+import {Toaster} from 'react-hot-toast'
 
 function App() {
   const { user } = useAuthContext();
@@ -29,6 +30,7 @@ function App() {
           element={user ? <DashboardPage /> : <Navigate to="/login" />} 
         />
       </Routes>
+      <Toaster position='bottom-center' reverseOrder={false}></Toaster>
     </Router>
   );
 }

@@ -10,14 +10,21 @@ const WelcomePage = () => {
   };
 
   return (
-    <main className="flex flex-col items-center justify-center h-screen bg-slate-50 px-4 font-mont">
+    <main className="flex flex-col items-center justify-center h-screen bg-accent px-4 font-mont">
       <div className="text-center mb-8">
-        <h1 className="text-8xl text-black mb-4 font-bebas">TT-Tabs 🏓</h1>
+        <motion.h1 
+          className="text-8xl text-bat-black mb-4 font-funnel font-semibold"
+          initial={{opacity: 0, y:-50}}
+          animate={{opacity: 1, y: 0}}
+          transition={{duration: 0.5, ease: "easeInOut"}}
+          >
+            TT-Tabs
+            </motion.h1>
       </div>
 
       <div className="mb-8">
         <motion.ul 
-          className="space-y-4 text-lg text-gray-800"
+          className="space-y-4 text-lg text-bat-black"
           initial={{ opacity: 0 }} 
           animate={{ opacity: 1 }} 
           transition={{ duration: 0.5 }}
@@ -40,22 +47,20 @@ const WelcomePage = () => {
       </div>
 
       <div className="flex gap-6">
-        <motion.button
-          className="px-6 py-2 bg-slate-900 text-white font-bold rounded-2xl text-lg shadow-md transition"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+        <button
+          className="px-6 py-2 bg-bat-black text-accent font-bold rounded-2xl text-lg shadow-md hover:bg-white hover:text-bat-black hover:ring-2 hover:ring-bat-black transition"
           onClick={() => handleRoute("/login")}
         >
           Login
-        </motion.button>
-        <motion.button
-          className="px-6 py-2 bg-red-500 text-white font-bold rounded-2xl text-lg shadow-md transition"
+        </button>
+        <button
+          className="px-6 py-2 bg-button-primary text-accent font-bold rounded-2xl text-lg shadow-md hover:text-button-primary hover:ring-2 hover:ring-button-primary hover:bg-accent transition"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => handleRoute("/register")}
         >
           Register
-        </motion.button>
+        </button>
       </div>
     </main>
   );

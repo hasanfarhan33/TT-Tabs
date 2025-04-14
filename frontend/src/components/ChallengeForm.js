@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import {motion, AnimatePresence} from "framer-motion"; 
-import axios from 'axios'
 import { useAuthContext } from "../hooks/useAuthContext";
+import axios from 'axios'; 
+import {toast} from 'react-hot-toast'
 
 const ChallengeForm = ({ onClose }) => {
     const {user} = useAuthContext(); 
@@ -11,6 +12,7 @@ const ChallengeForm = ({ onClose }) => {
 
     const [allUsers, setAllUsers] = useState([]); 
     const [filteredUsers, setFilteredUsers] = useState([])
+    const [isLoading, setIsLoading] = useState(false); 
      
 
     useEffect(() => {
@@ -40,6 +42,7 @@ const ChallengeForm = ({ onClose }) => {
         setReceiverName(selectedUser.displayName);
         setReceiverId(selectedUser._id);  
         setFilteredUsers([]); 
+
     }
 
     const handleSubmit = async (e) => {
@@ -49,20 +52,24 @@ const ChallengeForm = ({ onClose }) => {
             alert("Please select a player from the list")
             return; 
         }
+
+        setIsLoading(true); 
         
         try {
-            await axios.post("/api/challenges/create", {
+            await axios.post("/api/challenges/send", {
                 senderId: user._id,
-                receiverId: receiverId, 
-                bestOf: bestOf
-            })
+                receiverName: receiverName, 
+                bestOf: bestOf,
+            }); 
 
-            alert("Callenge sent")
+            toast.success("Challenge Sent!")
             onClose(); 
 
         } catch (error) {
-            console.error(error)
-            alert("Failed to send challenge")
+            console.error(error.message)
+            toast.error("Failed to send challenge!")
+        } finally {
+            setIsLoading(false); 
         }
     };
 
@@ -118,7 +125,7 @@ const ChallengeForm = ({ onClose }) => {
                 type="submit"
                 className="col-span-1 mt-4 px-4 py-2 bg-slate-900 text-white rounded hover:text-slate-900 hover:ring-slate-900 hover:ring-2 hover:bg-slate-50 transition font-bold"
                 >
-                Challenge!
+                {isLoading ? "Challenging" : "Challenge"}
                 </button>
                 <button
                 type="button"

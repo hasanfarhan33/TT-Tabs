@@ -3,7 +3,7 @@ const Challenge = require("../models/Challenge")
 const User = require('../models/User')
 const sendEmail = require("../utils/sendEmail")
 
-const createChallenge = async(req, res) => {
+const sendChallenge = async(req, res) => {
     try {
         const {senderId, receiverName, bestOf} = req.body; 
 
@@ -61,4 +61,4 @@ const createChallenge = async(req, res) => {
     }
 }
 
-module.exports = {createChallenge}; 
+module.exports = {sendChallenge}; 
