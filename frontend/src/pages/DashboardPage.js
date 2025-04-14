@@ -6,6 +6,10 @@ import { motion } from "framer-motion"; // Import motion
 import HeaderComponent from "../components/HeaderComponent"; 
 import ChallengeForm from "../components/ChallengeForm";
 
+// TODO: Add stats into a div
+// TODO: Add win / lose datapoint for each match
+
+
 const DashboardPage = () => {
     const {user} = useAuthContext(); 
     const [welcomeMessage, setWelcomeMessage] = useState(""); 
