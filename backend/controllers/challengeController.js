@@ -61,4 +61,92 @@ const sendChallenge = async(req, res) => {
     }
 }
 
-module.exports = {sendChallenge}; 
+// Get all challenges for the user
+const getPendingChallenges = async (req, res) => {
+    try {
+        // Check if the challenge receiver id is the same as the user id 
+        const receiverId = req.user._id; 
+
+        const challenges = await Challenge.find({
+            receiver: receiverId, 
+            status: "pending", 
+        }).populate("sender", "displayName")
+        
+        res.status(200).json(challenges); 
+        
+    } catch (error) {
+        console.error("Error fetching challenges", error.message); 
+        res.status(500).json({
+            error: "Could not fetch pending challenges", 
+        }); 
+    }
+}
+
+// TODO: Add controller for accepting the challenge 
+
+
+// Decline Challenge
+const declineChallenge = async (req, res) => {
+    try {
+        const userId = req.user._id; 
+        const {challengeId, challengerName} = req.body; 
+
+        // console.log("Challenge ID:", challengeId)
+        // console.log("Challenger Name:", challengerName) 
+
+        const user = await User.findById(userId);
+        if(!user) {
+            return res.status(404).json({message: "User not found!"})
+        } 
+
+        const challenger = await User.findOne({displayName: challengerName})
+        if(!challenger) {
+            console.error("Challenger was not found")
+            return res.status(404).json({message: "Could not find challenger!"}); 
+        }
+        
+        const challengerEmail = challenger.email; 
+
+        const challengeToDecline = await Challenge.findById(challengeId); 
+
+        if(!challengeToDecline) {
+            return res.status(404).json({message: "Challenge not found!"})
+        }
+
+        // DELETE THE CHALLENGE 
+        await Challenge.findByIdAndDelete(challengeId); 
+
+        // SEND EMAIL TO CHALLENGER 
+        const emailSubject = `TT-Tabs: ${user.displayName} doesn't want to play with you. 🥲`
+        const emailText = `Hey ${challenger.displayName}, your challenge has been declined.`
+        const emailBody = `
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f9f9ff; border: 1px solid #ddd; border-radius: 10px;">
+                <h1 style="text-align: center; color: #E11D48; margin-bottom: 10px;">🏓 TT-Tabs</h1>
+                <h2 style="color: #4F46E5;">Challenge Declined 😕</h2>
+                <p>Greetings <strong>${challenger.displayName}</strong>,</p>
+                <p><strong>${user.displayName}</strong> has declined your challenge.</p>
+                <p>Maybe they'll play with you some other time or you just need to make better friends. 🤷‍♂️</p>
+                <p>My apologies 😔</p>
+                <hr style="margin: 20px 0;" />
+                <small style="color: gray;">This is an automated message from TT-Tabs. Please do not reply.</small>
+            </div>
+            `; 
+
+        await sendEmail(
+            challengerEmail, 
+            emailSubject, 
+            emailText, 
+            emailBody,
+        )
+
+        return res.status(200).json({message: "Challenge has been declined and the email has been sent"}); 
+
+        
+    } catch (error) {
+        // console.error("Could not decline challenge")
+        return res.status(500).json({message: "Could not decline challenge"})
+        
+    }
+}
+
+module.exports = {sendChallenge, getPendingChallenges, declineChallenge}; 

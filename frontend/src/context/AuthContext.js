@@ -33,13 +33,15 @@ export const AuthContextProvider = ({children}) => {
 
                     const updatedUser = await response.json(); 
                     if(response.ok) {
-                        localStorage.setItem("user", JSON.stringify(updatedUser)); 
-                        dispatch({type: `LOGIN`, payload: updatedUser})
+                        const userWithToken = {...updatedUser, token: user.token}
+                        localStorage.setItem("user", JSON.stringify(userWithToken)); 
+                        dispatch({type: `LOGIN`, payload: userWithToken})
                     } else {
                         console.error("Failed to fetch updated user data"); 
                     }
                 } catch (error) {
-                    console.error("Error fetching updated user data"); 
+                    localStorage.removeItem("user"); 
+                    dispatch({type: "LOGOUT"}); 
                 }
             }
 

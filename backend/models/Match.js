@@ -1,6 +1,13 @@
 const mongoose = require("mongoose"); 
 
 const matchSchema = new mongoose.Schema({
+
+    challengeId: {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Challenge", 
+        required: true,
+    },
+
     player1: {
         type: mongoose.Schema.Types.ObjectId, 
         ref: "User", 
@@ -22,12 +29,9 @@ const matchSchema = new mongoose.Schema({
         enum: [1, 3, 5],
         required: true, 
     }, 
-    startedAt: {
+    matchDate: {
         type: Date, 
         default: Date.now 
-    }, 
-    endedAt: {
-        type: Date, 
     }
 })
 
