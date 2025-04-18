@@ -3,6 +3,21 @@ const Challenge = require("../models/Challenge")
 const User = require('../models/User')
 const sendEmail = require("../utils/sendEmail")
 
+// GET ALL CHALLENGES 
+const getChallenges = async(req, res) => {
+    try {
+        const challenges = await Challenge.find()
+        if(!challenges) {
+            return res.status(404).json({messages: "Could not fetch all challenges"})
+        }
+
+        return res.status(200).json(challenges); 
+
+    } catch (error) {
+        return res.status(500).json({message: "Could not get challenges. Server must be down!"})
+    }
+}
+
 const sendChallenge = async(req, res) => {
     try {
         const {senderId, receiverName, bestOf} = req.body; 
@@ -82,7 +97,86 @@ const getPendingChallenges = async (req, res) => {
     }
 }
 
+const getOngoingChallenges = async (req, res) => {
+    try {
+        const receiverId = req.user._id; 
+        const ongoingChallenges = await Challenge.find({
+            receiver: receiverId, 
+            status: "ongoing"
+        }).populate("sender", "displayName"); 
+
+        res.status(200).json(ongoingChallenges)
+
+    } catch (error) {
+        console.error("Error fetching ongoing challenges", error); 
+        res.status(500).json({error: "Could not fetch ongoing challenges"})
+    }
+}
+
 // TODO: Add controller for accepting the challenge 
+const acceptChallenge = async (req, res) => {
+
+    try {
+        
+        const userId = req.user._id; 
+        const {challengeId, challengerName} = req.body; 
+
+        const user = await User.findById(userId); 
+
+        if(!user) {
+            return res.status(404).json({message: "User not found"}); 
+        }
+
+        const challenger = await User.findOne({displayName: challengerName}); 
+        if(!challenger) {
+            console.error("Challenger was not found"); 
+            return res.status(400).json({message: "Challenger not found"}); 
+        }
+
+        const challengeToAccept = await Challenge.findById(challengeId); 
+
+        if(!challengeToAccept) {
+            console.error("Challenge not found!")
+            return res.status(400).json({message: "Challenge not found!"})
+        }
+
+        // Set the challenge to ongoing 
+        challengeToAccept.status = "ongoing"; 
+        await challengeToAccept.save();         
+
+        // Notify the challenger that the challenge has been accepted 
+        const challengerEmail = challenger.email; 
+
+        const emailSubject = `TT-Tabs: ${user.displayName} has accepted your challenge 😈`
+        const emailText = `Hey ${challenger.displayName}, your challenge has been accepted!`
+        const emailBody = `
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f9f9ff; border: 1px solid #ddd; border-radius: 10px;">
+                <h1 style="text-align: center; color: #E11D48; margin-bottom: 10px;">🏓 TT-Tabs</h1>
+                <h2 style="color: #4F46E5;">Challenge Accepted 😃</h2>
+                <p>Greetings <strong>${challenger.displayName}</strong>,</p>
+                <p><strong>${user.displayName}</strong> has accepted your challenge!</p>
+                <p>Get out there and do your best! It's not about winning, it's about having fun!</p>
+                <p>After you finish the game, you or your challenger can log in and enter the details of the game.</p>
+                <p>Break a leg! (not literally)</p>
+                <hr style="margin: 20px 0;" />
+                <small style="color: gray;">This is an automated message from TT-Tabs. Please do not reply.</small>
+            </div>
+            `; 
+
+        await sendEmail(
+            challengerEmail, 
+            emailSubject, 
+            emailText, 
+            emailBody,
+        )
+
+        return res.status(200).json({message: "Challenge has been accepted and the email has been sent"});
+        
+    } catch (error) {
+        return res.status(500).json({message: `Could not accept challenge: ${error}`})
+    }
+
+}
 
 
 // Decline Challenge
@@ -144,9 +238,9 @@ const declineChallenge = async (req, res) => {
         
     } catch (error) {
         // console.error("Could not decline challenge")
-        return res.status(500).json({message: "Could not decline challenge"})
+        return res.status(500).json({message: `Could not decline challenge: ${error}`})
         
     }
 }
 
-module.exports = {sendChallenge, getPendingChallenges, declineChallenge}; 
+module.exports = {getChallenges, sendChallenge, getPendingChallenges, getOngoingChallenges, declineChallenge, acceptChallenge}; 
