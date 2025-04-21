@@ -83,7 +83,7 @@ const ChallengeForm = ({ onClose }) => {
             transition={{ duration: 0.2 }}
             className="bg-alabaster p-8 rounded-xl w-[90%] max-w-md"
             >
-            <h2 className="text-4xl font-bebas mb-4 text-center">Challenge a Player!</h2>
+            <h2 className="text-3xl font-funnel font-semibold mb-4 text-center">Challenge a Player!</h2>
 
             <form className="grid grid-cols-2 gap-2" onSubmit={handleSubmit}>
                 <label className="col-span-2 block font-bold">Player Name</label>
@@ -123,14 +123,14 @@ const ChallengeForm = ({ onClose }) => {
 
                 <button
                 type="submit"
-                className="col-span-1 mt-4 px-4 py-2 bg-slate-900 text-white rounded hover:text-slate-900 hover:ring-slate-900 hover:ring-2 hover:bg-slate-50 transition font-bold"
+                className="col-span-1 mt-4 px-4 py-2 bg-bat-black text-white rounded-lg hover:text-bat-black hover:ring-bat-black hover:ring-2 hover:bg-white transition font-bold"
                 >
                 {isLoading ? "Challenging" : "Challenge"}
                 </button>
                 <button
                 type="button"
                 onClick={onClose}
-                className="col-span-1 mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700 transition font-bold"
+                className="col-span-1 mt-4 px-4 py-2 bg-button-primary text-white rounded hover:bg-white hover:ring-2 hover:ring-button-primary hover:text-button-primary transition font-bold"
                 >
                 Cancel
                 </button>

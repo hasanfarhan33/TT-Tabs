@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 // Components
 import HeaderComponent from "../components/HeaderComponent"; 
 import ChallengeForm from "../components/ChallengeForm";
+import MatchForm from "../components/MatchForm";
 import StatsComponent from "../components/StatsComponent";
 import ChallengesComponent from "../components/ChallengesComponent";
 
@@ -32,6 +33,14 @@ const DashboardPage = () => {
     ];
 
     const [showChallengeForm, setShowChallengeForm] = useState(false); 
+
+    const [selectedChallenge, setSelectedChallenge] = useState(null);
+    const [showMatchForm, setShowMatchForm] = useState(false);
+
+    const handleFinishChallenge = (challenge) => {
+        setSelectedChallenge(challenge);
+        setShowMatchForm(true);
+    };
 
     // Randomly choosing a welcome message
     useEffect(() => {
@@ -66,7 +75,7 @@ const DashboardPage = () => {
                 
 
                 {/* CHALLENGES */}
-                <ChallengesComponent></ChallengesComponent>
+                <ChallengesComponent onFinishChallenge={handleFinishChallenge}></ChallengesComponent>
 
                 {/* ACTION BUTTONS */}
                 <div className="flex flex-col gap-4">
@@ -87,6 +96,16 @@ const DashboardPage = () => {
                         Match History
                     </motion.button>
                 </div>
+
+                {showMatchForm && selectedChallenge && (
+                    <MatchForm
+                        challenge={selectedChallenge}
+                        onClose={() => {
+                            setShowMatchForm(false);
+                            setSelectedChallenge(null);
+                        }}
+                    />
+                )}
 
                 {showChallengeForm && <ChallengeForm onClose={() => setShowChallengeForm(false)} />}
             </main>

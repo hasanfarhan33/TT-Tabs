@@ -29,6 +29,11 @@ const matchSchema = new mongoose.Schema({
         enum: [1, 3, 5],
         required: true, 
     }, 
+    winner: {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "User", 
+        required: true,
+    },
     matchDate: {
         type: Date, 
         default: Date.now 

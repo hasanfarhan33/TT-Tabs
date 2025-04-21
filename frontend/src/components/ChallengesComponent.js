@@ -5,7 +5,7 @@ import axios from 'axios';
 import {toast} from 'react-hot-toast'
 
 
-const ChallengesComponent = () => {
+const ChallengesComponent = ({onFinishChallenge}) => {
 
     const {user} = useAuthContext(); 
     const config = {
@@ -16,7 +16,7 @@ const ChallengesComponent = () => {
 
     // PENDING AND ONGOING CHALLENGES 
     const [pendingChallenges, setPendingChallenges] = useState([]); 
-    const [ongoingChallenges, setOngoingChallenges] = useState([]); 
+    const [ongoingChallenges, setOngoingChallenges] = useState([]);
 
     // GETTING PENDING and ONGOING challenges
     // TODO: GET ONGOING CHALLENGES  
@@ -26,7 +26,7 @@ const ChallengesComponent = () => {
                 const pendingChallenges = await axios.get("/api/challenges/pending", config);
 
                 setPendingChallenges(pendingChallenges.data); 
-                console.log(pendingChallenges.data)
+                // console.log(pendingChallenges.data)
             } catch (error) {
                 console.error("Could not fetch pending challenges", error.message); 
             }
@@ -96,9 +96,11 @@ const ChallengesComponent = () => {
 
     }
 
-    const handleFinishChallenge = async (challenge) => {
-        // TODO: FINISH THIS
-    }
+    const handleFinishChallenge = (challenge) => {
+        if (onFinishChallenge) {
+            onFinishChallenge(challenge);
+        }
+    };
 
     return (
         <motion.div className="flex flex-col gap-6 mb-8 rounded-lg w-full p-4 pb-8 bg-white border-2 border-bat-black border-b-4 hover:shadow-md transition-all" whileHover="hover">
@@ -165,8 +167,6 @@ const ChallengesComponent = () => {
                         ))
                     ) : (<p className="text-center">No Ongoing Challenges 😟</p>))}
                     
-
-
                 </motion.div>
     ); 
 }
