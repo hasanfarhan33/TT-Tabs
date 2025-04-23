@@ -12,7 +12,6 @@ const ChallengeForm = ({ onClose }) => {
 
     const [allUsers, setAllUsers] = useState([]); 
     const [filteredUsers, setFilteredUsers] = useState([])
-    const [isLoading, setIsLoading] = useState(false); 
      
 
     useEffect(() => {
@@ -49,11 +48,11 @@ const ChallengeForm = ({ onClose }) => {
         e.preventDefault();
 
         if(!receiverId) {
-            alert("Please select a player from the list")
+            toast.error("Please select a player from the list!")
             return; 
         }
 
-        setIsLoading(true); 
+        const toastId = toast.loading("Sending Challenge...")
         
         try {
             await axios.post("/api/challenges/send", {
@@ -62,14 +61,12 @@ const ChallengeForm = ({ onClose }) => {
                 bestOf: bestOf,
             }); 
 
-            toast.success("Challenge Sent!")
+            toast.success("Challenge Sent!", {id: toastId})
             onClose(); 
 
         } catch (error) {
             console.error(error.message)
             toast.error("Failed to send challenge!")
-        } finally {
-            setIsLoading(false); 
         }
     };
 
@@ -125,7 +122,7 @@ const ChallengeForm = ({ onClose }) => {
                 type="submit"
                 className="col-span-1 mt-4 px-4 py-2 bg-bat-black text-white rounded-lg hover:text-bat-black hover:ring-bat-black hover:ring-2 hover:bg-white transition font-bold"
                 >
-                {isLoading ? "Challenging" : "Challenge"}
+                Challenge
                 </button>
                 <button
                 type="button"

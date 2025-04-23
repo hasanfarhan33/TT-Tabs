@@ -3,6 +3,7 @@ import {motion} from "framer-motion";
 import { useAuthContext } from "../hooks/useAuthContext";
 import axios from 'axios';
 import {toast} from 'react-hot-toast'
+import {Check, X} from 'lucide-react'; 
 
 
 const ChallengesComponent = ({onFinishChallenge}) => {
@@ -19,7 +20,6 @@ const ChallengesComponent = ({onFinishChallenge}) => {
     const [ongoingChallenges, setOngoingChallenges] = useState([]);
 
     // GETTING PENDING and ONGOING challenges
-    // TODO: GET ONGOING CHALLENGES  
     useEffect(() => {
         const getPendingChallenges = async () => {
             try {
@@ -54,12 +54,11 @@ const ChallengesComponent = ({onFinishChallenge}) => {
         const challengeId = challenge._id; 
         const challengerName = challenge.sender.displayName; 
 
-        console.log(challengeId)
-        console.log(challengerName)
+        const toastId = toast.loading("Accepting Challenge...")
 
         try {
             await axios.post("/api/challenges/accept", {challengeId, challengerName}, config) 
-            toast.success(`Challenge Accepted! Email sent to ${challengerName}`)
+            toast.success(`Challenge Accepted! Email sent to ${challengerName}!`, {id: toastId})
 
             // Updating the UI 
             setPendingChallenges((prevChallenges) => prevChallenges.filter((chal) => chal._id !== challengeId));    // Remove the accepted challenge
@@ -70,7 +69,7 @@ const ChallengesComponent = ({onFinishChallenge}) => {
             
 
         } catch (error) {
-            console.error("Failed to accept challenge!")
+            // console.error("Failed to accept challenge!")
             toast.error("Failed to accept challenge!")
         }
 
@@ -80,17 +79,18 @@ const ChallengesComponent = ({onFinishChallenge}) => {
     
         const challengeId = challenge._id; 
         const challengerName = challenge.sender.displayName;
+
+        const toastId = toast.loading("Declining Challenge...")
         
         try {
             await axios.post("/api/challenges/decline", {challengeId, challengerName}, config)
 
-            toast.success(`Challenge declined! Email sent to ${challengerName}`); 
+            toast.success(`Challenge declined! Email sent to ${challengerName}!`, {id: toastId}); 
             
             // Updating the UI
             setPendingChallenges(prev => prev.filter(c => c._id !== challengeId))
 
         } catch(error) {
-            console.error("Could not decline challenge")
             toast.error("Failed to decline challenge!")
         }
 
@@ -136,24 +136,24 @@ const ChallengesComponent = ({onFinishChallenge}) => {
                                 <div key={challenge._id} className="grid grid-cols-3 items-center text-center text-lg">
                                     <p className="text-bat-black">{challenge.sender.displayName}</p>
                                     <p className="text-bat-black">{challenge.bestOf}</p>
-                                    <div className="flex items-center justify-center gap-4">
+                                    <div className="flex items-center justify-center gap-2">
                                         <button
-                                            className="bg-bat-black font-semibold text-white px-2 rounded-lg hover:text-bat-black hover:bg-white hover:ring-2 hover:ring-bat-black transition"
+                                            className="bg-bat-black font-semibold text-white px-2 py-2 rounded-lg hover:text-bat-black hover:bg-white hover:ring-2 hover:ring-bat-black transition"
                                             onClick={() => handleAcceptChallenge(challenge)}
                                         >
-                                            Accept
+                                            <Check size={20} strokeWidth={4}></Check>
                                         </button>
                                         <button
-                                            className="bg-button-primary font-semibold text-white px-2 rounded-lg hover:text-button-primary hover:bg-white hover:ring-2 hover:ring-button-primary transition"
+                                            className="bg-button-primary font-semibold text-white px-2 py-2 rounded-lg hover:text-button-primary hover:bg-white hover:ring-2 hover:ring-button-primary transition"
                                             onClick={() => handleDeclineChallenge(challenge)}
                                         >
-                                            Decline
+                                            <X size={20} strokeWidth={4}></X>
                                         </button>
                                     </div>
                                 </div>
                             ))
                         ) : (
-                            <p>No pending challenges.</p>
+                            <p className="text-center">No Pending Challenges 😟</p>
                         )
                     )}
 
