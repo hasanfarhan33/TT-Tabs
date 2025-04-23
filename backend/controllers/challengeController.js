@@ -113,7 +113,6 @@ const getOngoingChallenges = async (req, res) => {
     }
 }
 
-// TODO: Add controller for accepting the challenge 
 const acceptChallenge = async (req, res) => {
 
     try {
@@ -243,4 +242,27 @@ const declineChallenge = async (req, res) => {
     }
 }
 
-module.exports = {getChallenges, sendChallenge, getPendingChallenges, getOngoingChallenges, declineChallenge, acceptChallenge}; 
+// Removing Challenge 
+const removeChallenge = async (req, res) => {
+    try {
+        const ObjectId = mongoose.Types.ObjectId; 
+        const {challengeId} = req.params;  
+        console.log(challengeId)
+        
+        // Making sure that the ID is valid 
+        if(!ObjectId.isValid(challengeId)) {    
+            return res.status(400).json({error: "Challenge ID not valid!"})
+        }
+        const challengeToRemove = await Challenge.findByIdAndDelete(challengeId)
+    
+        if(!challengeToRemove) {
+            return res.status(404).json({error: "Could not find challenge"})
+        }
+
+        return res.status(200).json({message: `Successfully Removed Challenge: ${challengeToRemove}`})
+    } catch (error) {
+        return res.status(500).json({message: `Could not delete challenge ${error}`})
+    }
+}
+
+module.exports = {getChallenges, sendChallenge, getPendingChallenges, getOngoingChallenges, declineChallenge, acceptChallenge, removeChallenge};

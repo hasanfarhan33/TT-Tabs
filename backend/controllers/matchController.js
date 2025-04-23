@@ -9,7 +9,8 @@ const sendEmail = require("../utils/sendEmail")
 const createMatch = async (req, res) => {
     try {
         const {challengeId, playerOne, playerTwo, scores, bestOf, winner} = req.body; 
-        console.log("Match Data: ", req.body); 
+        // console.log("Match Data: ", req.body); 
+        console.log("Scores in backend: ", scores)
 
         // Save the match 
         const newMatch = await Match.create({
@@ -84,7 +85,7 @@ const createMatch = async (req, res) => {
             secondPlayerEmailText, 
             secondPlayerEmailHtml,
         )
-    
+        console.log(`Match created successfully: ${newMatch}`)
         res.status(201).json({message: `Match created successfully: ${newMatch}`})
     } catch (error) {
         res.status(500).json({message: `Failed to create a match ${error}`}); 
@@ -92,8 +93,88 @@ const createMatch = async (req, res) => {
 
 }
 
+
+// REMOVE A MATCH 
+const removeMatch = async (req, res) => {
+    try {
+        const {matchId} = req.params; 
+
+        // Making sure that the match id is valid 
+        if(!mongoose.Types.ObjectId.isValid(matchId)) {
+            return res.status(400).json({error: `Invalid Match ID - could not delete match`}); 
+        }
+
+        const matchToDelete = await Match.findById(matchId)
+        
+        if(!matchToDelete) {
+            return res.status(404).json({error: `Could not find a match to delete`})
+        }
+
+        const playerOneId = matchToDelete.player1; 
+        const playerTwoId = matchToDelete.player2; 
+        const winnerId = matchToDelete.winner; 
+
+        // Decrementing the total matches for both users 
+        await User.findByIdAndUpdate(playerOneId, {
+            $inc: {
+                totalMatches: -1, 
+                totalWins: winnerId.toString() === playerOneId.toString() ? -1 : 0
+            }
+        })
+
+        await User.findByIdAndUpdate(playerTwoId, {
+            $inc: {
+                totalMatches: -1, 
+                totalWins: winnerId.toString() === playerTwoId.toString() ? -1: 0
+            }
+        })
+
+        // Remove challenge related to the match 
+        const challengeId = matchToDelete.challengeId;
+        
+        // Make sure that the challenge id is valid 
+        if(!mongoose.Types.ObjectId.isValid(challengeId)) {
+            return res.status(400).json({message: "Challenge ID is not valid --> Could not delete match"})
+        }
+
+        await Challenge.findByIdAndDelete(challengeId)
+
+        await Match.findByIdAndDelete(matchId); 
+
+        res.status(200).json({message: "Successfully Removed Match"})
+
+    } catch (error) {
+        res.status(500).json({error: "Server error -> Cannot remove match"})
+    }
+}
+
 // GET ALL MATCHES 
+const getAllMatches = async (req, res) => {
+    try {
+        const {userId} = req.params;
 
-// GET WON MATCHES 
+        // Making sure that the user id is valid 
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({error: `Invalid user ID - cannot find match`})
+        }
 
-module.exports = {createMatch}
+        const previousMatches = await Match.find({
+            $or: [
+                {player1: userId}, 
+                {player2: userId}
+            ]
+        }); 
+
+        if(!previousMatches.length) {
+            return res.status(404).json({message: "No matches found"}); 
+        }
+
+        return res.status(200).json(previousMatches)
+    
+        
+    } catch (error) {
+        res.status(500).json({message: "Server Error! Could not find previous matches."})
+    }
+}
+
+module.exports = {getAllMatches, createMatch, removeMatch}

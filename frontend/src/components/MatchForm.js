@@ -65,23 +65,23 @@ const MatchForm = ({challenge, onClose}) => {
 
 
     const isValidSet = (set) => {
-        const {p1, p2} = set;
+        const {player1Score, player2Score} = set;
         
         // If both players are more than or equal to 11 --> check for two point difference 
-        if (p1 >= 11 && p2 >= 11) {
-            const difference = Math.abs(p1 - p2) 
+        if (player1Score >= 11 && player2Score >= 11) {
+            const difference = Math.abs(player1Score - player2Score) 
             if (difference >= 2) {
                 return true; 
             }
         }
 
         // If either of the scores are more than 11 but the other score is less than 11 
-        if ((p1 > 11 && p2 < 11) || (p1 < 11 && p2 > 11)) {
+        if ((player1Score > 11 && player2Score < 11) || (player1Score < 11 && player2Score > 11)) {
             return false; 
         }
         
         // If either of the players have a score of more than or equal to 11 
-        if ((p1 >= 11 && p2 < 11) || (p1 < 11 && p2 >= 11)) {
+        if ((player1Score >= 11 && player2Score < 11) || (player1Score < 11 && player2Score >= 11)) {
             return true;
         }
 
@@ -94,8 +94,8 @@ const MatchForm = ({challenge, onClose}) => {
         let p2Wins = 0; 
         
         for(const set of scores) {
-            if(set.p1 > set.p2) p1Wins++; 
-            else if(set.p2 > set.p1) p2Wins++; 
+            if(set.player1Score > set.player2Score) p1Wins++; 
+            else if(set.player2Score > set.player1Score) p2Wins++; 
         }
         
         return p1Wins > p2Wins ? playerOneId : playerTwoId; 
@@ -108,7 +108,7 @@ const MatchForm = ({challenge, onClose}) => {
             if(set.p1 === 0 && set.p2 === 0) {
                 continue
             } else {
-                filteredScores.push(set); 
+                filteredScores.push({player1Score: set.p1, player2Score: set.p2}); 
             }
         } 
 
@@ -127,13 +127,9 @@ const MatchForm = ({challenge, onClose}) => {
         let playerOneWins = 0; 
         let playerTwoWins = 0; 
         for (const set of filteredScores) {
-            if(set.p1 > set.p2) playerOneWins++; 
-            else if(set.p2 > set.p1) playerTwoWins++; 
+            if(set.player1Score > set.player2Score) playerOneWins++; 
+            else if(set.player2Score > set.player1Score) playerTwoWins++; 
         }
-
-        console.log("Required Wins: ", requiredWins); 
-        console.log("Player One Wins: ", playerOneWins)
-        console.log("Player Two Wins: ", playerTwoWins)
 
         if(playerOneWins > requiredWins || playerTwoWins > requiredWins) {
             toast.error("Too many scores!")
@@ -154,6 +150,11 @@ const MatchForm = ({challenge, onClose}) => {
                     bestOf: matchSet, 
                     winner: winnerId, 
                 }
+
+                console.log("match data: ", matchData)
+
+                // console.log("Scores: ", scores)
+                console.log("Filtered Scores: ", filteredScores)
 
                 const toastId = toast.loading("Submitting Match Info...")
     
