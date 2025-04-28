@@ -9,6 +9,7 @@ import ChallengeForm from "../components/ChallengeForm";
 import MatchForm from "../components/MatchForm";
 import StatsComponent from "../components/StatsComponent";
 import ChallengesComponent from "../components/ChallengesComponent";
+import MatchComponent from "../components/MatchComponent";
 
 // TODO: MAKE SURE THE USER CAN"T SEND A CHALLENGE TO HIMSELF / HERSELF
 const DashboardPage = () => {
@@ -77,6 +78,9 @@ const DashboardPage = () => {
 
                 {/* CHALLENGES */}
                 <ChallengesComponent onFinishChallenge={handleFinishChallenge}></ChallengesComponent>
+
+                {/* MATCHES */}
+                <MatchComponent></MatchComponent>
 
                 {/* ACTION BUTTONS */}
                 <div className="flex flex-col gap-4">

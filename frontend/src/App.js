@@ -5,6 +5,7 @@ import RegisterPage from "./pages/RegisterPage";
 import WelcomePage from "./pages/WelcomePage"; 
 import { useAuthContext } from './hooks/useAuthContext';
 import {Toaster} from 'react-hot-toast'
+import StatsPage from './pages/StatsPage';
 
 function App() {
   const { user } = useAuthContext();
@@ -29,6 +30,10 @@ function App() {
           path="/dashboard" 
           element={user ? <DashboardPage /> : <Navigate to="/login" />} 
         />
+        <Route
+          path='/statsPage' 
+          element={user ? <StatsPage></StatsPage> : <Navigate to="/login"/>}
+        ></Route>
       </Routes>
       <Toaster position='bottom-center' reverseOrder={false}></Toaster>
     </Router>

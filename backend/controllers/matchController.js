@@ -163,7 +163,7 @@ const getAllMatches = async (req, res) => {
                 {player1: userId}, 
                 {player2: userId}
             ]
-        }); 
+        }).populate('player1', 'displayName').populate('player2', 'displayName').sort({matchDate: -1}); 
 
         if(!previousMatches.length) {
             return res.status(404).json({message: "No matches found"}); 

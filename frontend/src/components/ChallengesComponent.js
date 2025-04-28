@@ -109,7 +109,7 @@ const ChallengesComponent = ({onFinishChallenge}) => {
                     >
                         Challenges
                         <motion.span
-                        className="absolute left-0 -bottom-1 h-[2px] bg-bat-black"
+                        className="absolute left-0 bottom-1 h-[2px] bg-bat-black"
                         variants={{
                             initial: { width: 0 },
                             hover: { width: "100%" },

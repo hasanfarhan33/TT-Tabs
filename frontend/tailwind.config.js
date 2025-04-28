@@ -6,13 +6,13 @@ module.exports = {
     extend: {
       colors: {
         alabaster: "#FAFAFA", 
-        primary: '#C42A1F', // Subtle table tennis red
-        secondary: '#212121', // Dark gray (for bat handles, subtle black)
-        accent: '#F1F1F1', // Light gray (for contrast)
-        background: '#FAFAFA', // Soft off-white background
-        text: '#333333', // Darker gray for text
-        'button-primary': '#C42A1F', // Primary button red
-        'button-hover': '#A61C14', // Hover state for buttons
+        primary: '#C42A1F', 
+        secondary: '#212121', 
+        accent: '#F1F1F1', 
+        background: '#FAFAFA', 
+        text: '#333333', 
+        'button-primary': '#C42A1F',
+        'button-hover': '#A61C14', 
         'bat-black': '#303030'
       },
       fontFamily: {
