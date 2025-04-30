@@ -18,26 +18,36 @@ const ChallengesComponent = ({onFinishChallenge}) => {
     // PENDING AND ONGOING CHALLENGES 
     const [pendingChallenges, setPendingChallenges] = useState([]); 
     const [ongoingChallenges, setOngoingChallenges] = useState([]);
+    const [isPendingLoading, setIsPendingLoading] = useState(false);
+    const [isOngoingLoading, setIsOngoingLoading] = useState(false);  
 
     // GETTING PENDING and ONGOING challenges
     useEffect(() => {
         const getPendingChallenges = async () => {
             try {
+                setIsPendingLoading(true)
                 const pendingChallenges = await axios.get("/api/challenges/pending", config);
 
                 setPendingChallenges(pendingChallenges.data); 
                 // console.log(pendingChallenges.data)
             } catch (error) {
+                setIsPendingLoading(false)
                 console.error("Could not fetch pending challenges", error.message); 
+            } finally {
+                setIsPendingLoading(false)
             }
         }
 
         const getOngoingChallenges = async () => {
             try {
+                setIsOngoingLoading(true)
                 const ongoingChallenges = await axios.get("/api/challenges/ongoing", config); 
                 setOngoingChallenges(ongoingChallenges.data); 
             } catch (error) {
+                setIsOngoingLoading(false)
                 console.error("Could not fetch ongoing challenges", error); 
+            } finally {
+                setIsOngoingLoading(false)
             }
         }
 
@@ -102,6 +112,7 @@ const ChallengesComponent = ({onFinishChallenge}) => {
         }
     };
 
+    // TODO: ADD A LOADING ANIMATION HERE
     return (
         <motion.div className="flex flex-col gap-6 mb-8 rounded-lg w-full p-4 pb-8 bg-white border-2 border-bat-black border-b-4 hover:shadow-md transition-all" whileHover="hover">
                     <motion.h1
