@@ -12,17 +12,17 @@ const MatchComponent = () => {
 
     // Get the previous 5 matches
     useEffect(() => {
-        const getPreviousFiveMatches = async () => {
+        const getPreviousThreeMatches = async () => {
             try {
                 const userId = user._id; 
                 const previousMatches = await axios.get(`/api/matches/getAll/${userId}`)
                 console.log(previousMatches.data); 
 
                 // If the array is smaller than 5 --> preview all the matches 
-                if (previousMatches.data.length < 5) {
+                if (previousMatches.data.length < 3) {
                     setMatches(previousMatches.data); 
                 } else {
-                    setMatches(previousMatches.data.slice(0, 5)); 
+                    setMatches(previousMatches.data.slice(0, 3)); 
                 }
 
 
@@ -32,7 +32,7 @@ const MatchComponent = () => {
             }
         }
 
-        getPreviousFiveMatches(); 
+        getPreviousThreeMatches(); 
     }, [user._id]) 
 
     // TODO: FILL THIS FUNCTION!
@@ -52,7 +52,7 @@ const MatchComponent = () => {
             transition={{duration: 0.3, ease: "easeInOut"}}
             />    
             </motion.h1>
-            <p>Here are your last 5 matches!</p>   
+            <p>Here are your last 3 matches!</p>   
             
             {/* DISPLAYING THE MATCHES */}
             <div>

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { motion } from "framer-motion";
 
+import { useChallengeContext } from "../hooks/useChallengeContext";
+
 
 // Components
 import HeaderComponent from "../components/HeaderComponent"; 
@@ -15,7 +17,7 @@ import MatchComponent from "../components/MatchComponent";
 const DashboardPage = () => {
     // FOR AUTHORIZATION
     const {user} = useAuthContext();
-    
+    const {finishChallenge} = useChallengeContext(); 
     
     const [welcomeMessage, setWelcomeMessage] = useState(""); 
     const messages = [
@@ -39,11 +41,6 @@ const DashboardPage = () => {
     const [selectedChallenge, setSelectedChallenge] = useState(null);
     const [showMatchForm, setShowMatchForm] = useState(false);
 
-    const handleFinishChallenge = (challenge) => {
-        setSelectedChallenge(challenge);
-        setShowMatchForm(true);
-    };
-
     // Randomly choosing a welcome message
     useEffect(() => {
         const randomIndex = Math.floor(Math.random() * messages.length); 
@@ -56,6 +53,12 @@ const DashboardPage = () => {
 
     const handlePreviousGamesButton = () => {
         console.log("You wanna see your previous games")
+    }
+
+    const handleFinishChallenge = (challenge) => {
+        finishChallenge(challenge); 
+        setSelectedChallenge(challenge); 
+        setShowMatchForm(true); 
     }
 
     return (

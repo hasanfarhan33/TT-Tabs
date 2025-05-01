@@ -2,6 +2,53 @@ const mongoose = require("mongoose")
 const User = require("../models/User")
 const Match = require("../models/Match"); 
 
+
+// Get win rate 
+const getWinRate = async (req, res) => {
+    try {
+        const {userId} = req.params; 
+        let totalMatches = 0 
+        
+        if(!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({error: "Invalid user ID - cannot get win rate"})
+        }
+
+        const matches = await Match.find({
+            $or: [{player1: userId}, {player2: userId}]
+        })
+
+        totalMatches = matches.length; 
+
+        if (totalMatches === 0) {
+            return res.status(200).json({
+                totalWins: 0, 
+                totalMatches: 0, 
+                winRate: 0
+            });
+        }
+        
+        let totalWins = 0 
+        
+        matches.forEach(match => {
+            if(match.winner && match.winner.toString() === userId) {
+                totalWins++; 
+            }
+        })
+
+        const winRate = Math.floor((totalWins / totalMatches) * 100)
+
+        return res.status(200).json({
+            totalWins,
+            totalMatches, 
+            winRate
+        })
+
+    } catch (error) {
+        return res.status(500).json({error: "Could not get win rate!"})        
+    }
+}
+
+
 // Get score distribution  
 const getScoreDistribution = async (req, res) => {
     // GET THE USER ID 
@@ -110,4 +157,4 @@ const getTopFiveOpponents = async (req, res) => {
 }
 
 
-module.exports = {getScoreDistribution, getTopFiveOpponents}
+module.exports = {getScoreDistribution, getTopFiveOpponents, getWinRate}

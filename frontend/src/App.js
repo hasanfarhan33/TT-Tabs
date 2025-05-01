@@ -6,37 +6,43 @@ import WelcomePage from "./pages/WelcomePage";
 import { useAuthContext } from './hooks/useAuthContext';
 import {Toaster} from 'react-hot-toast'
 import StatsPage from './pages/StatsPage';
+import { ChallengeProvider } from './context/ChallengeContext';
 
 function App() {
   const { user } = useAuthContext();
 
   return (
-    <Router>
-      <Routes>
-        <Route 
-          path="/" 
-          element={!user ? <WelcomePage /> : <Navigate to="/dashboard" />} 
-        />
-        <Route 
-          path="/login" 
-          element={!user ? <LoginPage /> : <Navigate to="/dashboard" />} 
-        />
-        <Route 
-          path="/register" 
-          element={!user ? <RegisterPage /> : <Navigate to="/dashboard" />} 
-        />
+      <Router>
+        <Routes>
+          <Route 
+            path="/" 
+            element={!user ? <WelcomePage /> : <Navigate to="/dashboard" />} 
+          />
+          <Route 
+            path="/login" 
+            element={!user ? <LoginPage /> : <Navigate to="/dashboard" />} 
+          />
+          <Route 
+            path="/register" 
+            element={!user ? <RegisterPage /> : <Navigate to="/dashboard" />} 
+          />
 
-        <Route 
-          path="/dashboard" 
-          element={user ? <DashboardPage /> : <Navigate to="/login" />} 
-        />
-        <Route
-          path='/statsPage' 
-          element={user ? <StatsPage></StatsPage> : <Navigate to="/login"/>}
-        ></Route>
-      </Routes>
-      <Toaster position='bottom-center' reverseOrder={false}></Toaster>
-    </Router>
+          <Route 
+            path="/dashboard" 
+            element={user ? (
+            <ChallengeProvider userId={user._id} bearerToken={user.token}>
+              <DashboardPage />
+            </ChallengeProvider>
+            
+          ) : (<Navigate to="/login" />)} 
+          />
+          <Route
+            path='/statsPage' 
+            element={user ? <StatsPage></StatsPage> : <Navigate to="/login"/>}
+          ></Route>
+        </Routes>
+        <Toaster position='bottom-center' reverseOrder={false}></Toaster>
+      </Router>
   );
 }
 

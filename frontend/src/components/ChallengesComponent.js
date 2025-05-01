@@ -5,106 +5,40 @@ import axios from 'axios';
 import {toast} from 'react-hot-toast'
 import {Check, X} from 'lucide-react'; 
 
+import { useChallengeContext } from "../hooks/useChallengeContext";
 
 const ChallengesComponent = ({onFinishChallenge}) => {
 
-    const {user} = useAuthContext(); 
-    const config = {
-        headers: {Authorization: `Bearer ${user.token}`}
-    }
+    const {ongoingChallenges, pendingChallenges, handleAcceptChallenge, handleDeclineChallenge, error,} = useChallengeContext(); 
 
     const [activeTab, setActiveTab] = useState("pending"); 
 
-    // PENDING AND ONGOING CHALLENGES 
-    const [pendingChallenges, setPendingChallenges] = useState([]); 
-    const [ongoingChallenges, setOngoingChallenges] = useState([]);
-    const [isPendingLoading, setIsPendingLoading] = useState(false);
-    const [isOngoingLoading, setIsOngoingLoading] = useState(false);  
-
-    // GETTING PENDING and ONGOING challenges
-    useEffect(() => {
-        const getPendingChallenges = async () => {
-            try {
-                setIsPendingLoading(true)
-                const pendingChallenges = await axios.get("/api/challenges/pending", config);
-
-                setPendingChallenges(pendingChallenges.data); 
-                // console.log(pendingChallenges.data)
-            } catch (error) {
-                setIsPendingLoading(false)
-                console.error("Could not fetch pending challenges", error.message); 
-            } finally {
-                setIsPendingLoading(false)
-            }
-        }
-
-        const getOngoingChallenges = async () => {
-            try {
-                setIsOngoingLoading(true)
-                const ongoingChallenges = await axios.get("/api/challenges/ongoing", config); 
-                setOngoingChallenges(ongoingChallenges.data); 
-            } catch (error) {
-                setIsOngoingLoading(false)
-                console.error("Could not fetch ongoing challenges", error); 
-            } finally {
-                setIsOngoingLoading(false)
-            }
-        }
-
-        if(user) {
-            getPendingChallenges(); 
-            getOngoingChallenges(); 
-        }
-
-    }, [])
-
-
-
-    const handleAcceptChallenge = async (challenge) => {
-        const challengeId = challenge._id; 
-        const challengerName = challenge.sender.displayName; 
-
-        const toastId = toast.loading("Accepting Challenge...")
-
+    // Handle accept challenge 
+    const handleAccept = async (challenge) => {
         try {
-            await axios.post("/api/challenges/accept", {challengeId, challengerName}, config) 
-            toast.success(`Challenge Accepted! Email sent to ${challengerName}!`, {id: toastId})
-
-            // Updating the UI 
-            setPendingChallenges((prevChallenges) => prevChallenges.filter((chal) => chal._id !== challengeId));    // Remove the accepted challenge
-            setOngoingChallenges((prevChallenges) => [
-                ...prevChallenges, 
-                {...challenge, status: 'ongoing'},  // Add to ongoing challenges 
-            ])
-            
-
+            const toastId = toast.loading("Accepting Challenge...")
+            await handleAcceptChallenge(challenge); 
+            toast.success("Challenge Accepted!", {id: toastId})
         } catch (error) {
-            // console.error("Failed to accept challenge!")
             toast.error("Failed to accept challenge!")
         }
-
     }
 
-    const handleDeclineChallenge = async (challenge) => {
-    
-        const challengeId = challenge._id; 
-        const challengerName = challenge.sender.displayName;
-
-        const toastId = toast.loading("Declining Challenge...")
-        
+    const handleDecline = async (challenge) => {
         try {
-            await axios.post("/api/challenges/decline", {challengeId, challengerName}, config)
-
-            toast.success(`Challenge declined! Email sent to ${challengerName}!`, {id: toastId}); 
-            
-            // Updating the UI
-            setPendingChallenges(prev => prev.filter(c => c._id !== challengeId))
-
-        } catch(error) {
+            const toastId = toast.loading("Declining Challenge...")
+            await handleDeclineChallenge(challenge); 
+            toast.success("Challenge Declined!", {id: toastId})
+        } catch (error) {
             toast.error("Failed to decline challenge!")
         }
-
     }
+
+    useEffect(() => {
+        if(error) {
+            toast.error(error); 
+        }
+    }, [error])
 
     const handleFinishChallenge = (challenge) => {
         if (onFinishChallenge) {
@@ -150,13 +84,13 @@ const ChallengesComponent = ({onFinishChallenge}) => {
                                     <div className="flex items-center justify-center gap-2">
                                         <button
                                             className="bg-bat-black font-semibold text-white px-2 py-2 rounded-lg hover:text-bat-black hover:bg-white hover:ring-2 hover:ring-bat-black transition"
-                                            onClick={() => handleAcceptChallenge(challenge)}
+                                            onClick={() => handleAccept(challenge)}
                                         >
                                             <Check size={20} strokeWidth={4}></Check>
                                         </button>
                                         <button
                                             className="bg-button-primary font-semibold text-white px-2 py-2 rounded-lg hover:text-button-primary hover:bg-white hover:ring-2 hover:ring-button-primary transition"
-                                            onClick={() => handleDeclineChallenge(challenge)}
+                                            onClick={() => handleDecline(challenge)}
                                         >
                                             <X size={20} strokeWidth={4}></X>
                                         </button>

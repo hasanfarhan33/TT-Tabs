@@ -23,7 +23,7 @@ ChartJS.register(ArcElement, Tooltip, Legend, Title, CategoryScale, LinearScale,
 //     'bat-black': '#303030'
 //   },
 
-
+// TODO: CREATE STATS CONTEXT SO THEY UPDATE AUTOMATICALLY
 const StatsPage = () => {
 
     const {user} = useAuthContext(); 
@@ -142,17 +142,17 @@ const StatsPage = () => {
         datasets: [
           {
             data: scoreDistributionValues, 
-            backgroundColor: "#E97777", 
+            backgroundColor: "rgba(233, 119, 119, 0.7)", 
             borderColor: "#303030",
             borderWidth: 2,
             borderRadius: 5,
-            hoverBackgroundColor: "#A61C14",
+            hoverBackgroundColor: "rgba(166, 28, 20, 0.7)",
           }
         ] 
       }
 
     }
-    const barChartOptions = {
+    const scoreDistributionChartOptions = {
       responsive: true, 
       plugins: {
         legend: {
@@ -178,6 +178,15 @@ const StatsPage = () => {
       scales: {
         y: {
           beginAtZero: true, 
+          title: {
+            display: true, 
+            text: "Count", 
+            color: "#303030", 
+            font: {
+              family: "Funnel Display, sans-serif", 
+              weight: "bold"
+            }
+          },
           ticks:{ 
             color: "#303030", 
             font: {
@@ -190,6 +199,15 @@ const StatsPage = () => {
           }
         }, 
         x: {
+          title: {
+            display: true, 
+            text: "Scores", 
+            color: "#303030", 
+            font: {
+              family: "Funnel Display, sans-serif", 
+              weight: "bold"
+            }
+          },
           ticks: {
             color: "#303030", 
             font: {
@@ -214,13 +232,82 @@ const StatsPage = () => {
         datasets: [
           {
             data: topFiveOpponentsValues, 
-            backgroundColor: "#E97777", 
+            backgroundColor: "rgba(233, 119, 119, 0.7)", 
             borderColor: "#303030",
             borderWidth: 2,
             borderRadius: 5,
-            hoverBackgroundColor: "#A61C14",
+            hoverBackgroundColor: "rgba(166, 28, 20, 0.7)",
           }
         ]
+      }
+    }
+    const topFiveOpponentsChartOptions = {
+      responsive: true, 
+      plugins: {
+        legend: {
+          display: false 
+        }, 
+        title: {
+          display: false,
+        }, 
+        tooltip: {
+          bodyFont: {
+            family: 'Funnel Display, sans-serif',
+            size: 14,
+          },
+          backgroundColor: '#ffffff',
+          titleFont: {
+            family: 'Funnel Display, sans-serif',
+            size: 16,
+          },
+          titleColor: '#1f2937',
+          bodyColor: "#303030", 
+        },
+      }, 
+      scales: {
+        y: {
+          beginAtZero: true, 
+          title: {
+            display: true, 
+            text: "Number of Games", 
+            color: "#303030", 
+            font: {
+              family: "Funnel Display, sans-serif", 
+              weight: "bold"
+            }
+          },
+          ticks:{ 
+            color: "#303030", 
+            font: {
+              family: "Funnel Display, sans-serif", 
+              weight: "bold"
+            }
+          }, 
+          grid: {
+            color: "#e5e5e5"
+          }
+        }, 
+        x: {
+          title: {
+            display: true, 
+            text: "Opponent Name", 
+            color: "#303030", 
+            font: {
+              family: "Funnel Display, sans-serif", 
+              weight: "bold"
+            }
+          },
+          ticks: {
+            color: "#303030", 
+            font: {
+              family: "Funnel Display, sans-serif", 
+              weight: "bold"
+            }
+          }, 
+          grid: {
+            color: "#e5e5e5"
+          }
+        }
       }
     }
 
@@ -272,7 +359,7 @@ const StatsPage = () => {
                       transition={{ duration: 0.3, ease: "easeInOut" }}
                     />
                   </motion.h1>
-                  <Bar data={scoreDistributionChartData} options={barChartOptions} />
+                  <Bar data={scoreDistributionChartData} options={scoreDistributionChartOptions} />
                 </motion.div>
               )}
 
@@ -280,7 +367,7 @@ const StatsPage = () => {
               {topFiveOpponentsData && (
                 <motion.div className='flex flex-col gap-6 mb-8 rounded-lg w-full p-4 pb-8 bg-white border-2 border-b-4 border-bat-black hover:shadow-md transition-all' whileHover="hover">
                   <motion.h1 className="font-funnel text-2xl font-semibold relative w-fit cursor-default">
-                    Top 5 Opponents
+                    Favorite Opponents
                     <motion.span
                       className="absolute left-0 bottom-1 h-[2px] bg-bat-black"
                       variants={{
@@ -290,7 +377,7 @@ const StatsPage = () => {
                       transition={{ duration: 0.3, ease: "easeInOut" }}
                     />
                   </motion.h1>
-                  <Bar data={topFiveOpponentsChartData} options={barChartOptions}></Bar>
+                  <Bar data={topFiveOpponentsChartData} options={topFiveOpponentsChartOptions}></Bar>
 
                 </motion.div>
               )}

@@ -3,6 +3,8 @@ import {useNavigate} from 'react-router-dom';
 import {motion, AnimatePresence} from 'framer-motion'; 
 import { useAuthContext } from "../hooks/useAuthContext";
 
+
+// TODO: CREATE STATS CONTEXT SO THEY UPDATE AUTOMATICALLY
 const StatsComponent = () => {
 
     const {user} = useAuthContext(); 
