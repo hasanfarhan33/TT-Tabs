@@ -95,14 +95,6 @@ const DashboardPage = () => {
                     >
                         Challenge a Player!
                     </motion.button>
-                    <motion.button
-                        className="w-full bg-button-primary hover:bg-accent text-accent hover:text-button-primary hover:ring-2 hover:ring-button-primary py-2 px-6 rounded-lg font-bold transition mb-8"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={handlePreviousGamesButton}
-                    >
-                        Match History
-                    </motion.button>
                 </div>
 
                 {showMatchForm && selectedChallenge && (
